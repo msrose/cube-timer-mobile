@@ -1,0 +1,40 @@
+h1, h2 {
+  text-align: center;
+}
+
+select {
+  font-size: 26px;
+  border-radius: 5px;
+  background-color: white;
+  padding: 5px;
+}
+
+button {
+  font-size: 26px;
+  background-color: #1a3ca2;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  width: 100%;
+}
+
+#puzzleDropdown {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#timer {
+  display: none;
+}
+
+#ready {
+  visibility: hidden;
+}
+
+#counter {
+  text-align: center;
+  padding: 60px;
+  margin-bottom: 20px;
+  font-size: 30px;
+  font-family: monospace;
+}
