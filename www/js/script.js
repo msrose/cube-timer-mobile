@@ -30,7 +30,7 @@
       $timer.hide();
       $choosePuzzle.show();
       $counterDisplay.html('&nbsp;');
-      $counter.hide();
+      $timer.hide();
       $document
         .off('backbutton', back)
         .off('touchstart mousedown', ready)
@@ -61,6 +61,7 @@
 
     function start(event) {
       startTime = Date.now();
+      plugins.insomnia.keepAwake();
       $body.css({ backgroundColor: 'white' });
       $document.off('touchend mouseup', start);
       $counter.show();
@@ -78,6 +79,7 @@
     function done(event) {
       var endTime = Date.now();
       $document.off('touchstart mousedown', done);
+      plugins.insomnia.allowSleepAgain();
       timer.stop();
       timer.unsubscribe(subscriber);
       $counterDisplay.text(formatTime(endTime - startTime));
