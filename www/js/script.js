@@ -9,9 +9,9 @@
     var $ready = $('#ready');
     var $counter = $('#counter');
     var $counterDisplay = $('#counterDisplay');
-    var $btnTime = $('#btnTime');
     var $btnStart = $('#btnStart')
     var $document = $(document);
+    var $body = $('body');
     var startTimeout = null;
     var timer = new Timer(10);
     var startTime;
@@ -20,31 +20,39 @@
       $puzzleName.text($puzzleDropdown.val());
       $choosePuzzle.hide();
       $timer.show();
-      $document.on('backbutton', back);
+      $document
+        .on('backbutton', back)
+        .on('touchstart', ready)
+        .on('mousedown', ready)
+        .on('touchend', cancelReady)
+        .on('mouseup', cancelReady);
     });
-
-    $btnTime
-      .on('touchstart', ready)
-      .on('mousedown', ready)
-      .on('touchend', cancelReady)
-      .on('mouseup', cancelReady);
 
     function back(event) {
       $timer.hide();
       $choosePuzzle.show();
-      $document.off('backbutton', back);
+      $counterDisplay.html('&nbsp;');
+      $counter.hide();
+      $document
+        .off('backbutton', back)
+        .off('touchstart', ready)
+        .off('mousedown', ready)
+        .off('touchend', cancelReady)
+        .off('mouseup', cancelReady);
+      timer.unsubscribe(subscriber);
+      timer.stop();
+      timer.reset();
     }
 
     function ready(event) {
+      event.preventDefault();
+      $body.css({ backgroundColor: '#b3ccff' });
       startTimeout = setTimeout(function() {
         startTimeout = null;
         $counter.hide();
-        $ready.css({
-          display: 'block',
-          visibility: 'visible',
-          backgroundColor: 'green'
-        });
-        $btnTime
+        $ready.show();
+        $body.css({ backgroundColor: '#ccff99' });
+        $document
           .on('touchend', start)
           .on('mouseup', start);
       }, 500);
@@ -53,15 +61,16 @@
     function cancelReady(event) {
       if(startTimeout) {
         clearTimeout(startTimeout);
+        $body.css({ backgroundColor: 'white' });
       }
     }
 
     function start(event) {
       startTime = Date.now();
-      $btnTime
+      $body.css({ backgroundColor: 'white' });
+      $document
         .off('touchend', start)
         .off('mouseup', start);
-      $btnTime.hide();
       $counter.show();
       $ready.hide();
       timer.reset();
@@ -84,7 +93,6 @@
       timer.stop();
       timer.unsubscribe(subscriber);
       $counterDisplay.text(formatTime(endTime - startTime));
-      $btnTime.show();
     }
 
     function pad(num, size) {

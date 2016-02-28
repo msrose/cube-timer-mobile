@@ -23,15 +23,7 @@ button {
   margin-bottom: 20px;
 }
 
-#timer {
-  display: none;
-}
-
-#ready {
-  visibility: hidden;
-}
-
-#counter {
+.hidden {
   display: none;
 }
 
