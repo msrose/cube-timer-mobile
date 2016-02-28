@@ -29,15 +29,16 @@
     function back(event) {
       $timer.hide();
       $choosePuzzle.show();
-      $counterDisplay.html('&nbsp;');
-      $timer.hide();
+      plugins.insomnia.allowSleepAgain();
       $document
         .off('backbutton', back)
         .off('touchstart mousedown', ready)
-        .off('touchend mouseup', cancelReady);
+        .off('touchend mouseup', cancelReady)
+        .off('touchstart mousedown', done);
       timer.unsubscribe(subscriber);
       timer.stop();
       timer.reset();
+      $counterDisplay.html('&nbsp;');
     }
 
     function ready(event) {
