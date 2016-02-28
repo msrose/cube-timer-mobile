@@ -22,10 +22,8 @@
       $timer.show();
       $document
         .on('backbutton', back)
-        .on('touchstart', ready)
-        .on('mousedown', ready)
-        .on('touchend', cancelReady)
-        .on('mouseup', cancelReady);
+        .on('touchstart mousedown', ready)
+        .on('touchend mouseup', cancelReady);
     });
 
     function back(event) {
@@ -35,10 +33,8 @@
       $counter.hide();
       $document
         .off('backbutton', back)
-        .off('touchstart', ready)
-        .off('mousedown', ready)
-        .off('touchend', cancelReady)
-        .off('mouseup', cancelReady);
+        .off('touchstart mousedown', ready)
+        .off('touchend mouseup', cancelReady);
       timer.unsubscribe(subscriber);
       timer.stop();
       timer.reset();
@@ -52,9 +48,7 @@
         $counter.hide();
         $ready.show();
         $body.css({ backgroundColor: '#ccff99' });
-        $document
-          .on('touchend', start)
-          .on('mouseup', start);
+        $document.on('touchend mouseup', start);
       }, 500);
     }
 
@@ -68,16 +62,12 @@
     function start(event) {
       startTime = Date.now();
       $body.css({ backgroundColor: 'white' });
-      $document
-        .off('touchend', start)
-        .off('mouseup', start);
+      $document.off('touchend mouseup', start);
       $counter.show();
       $ready.hide();
       timer.reset();
       timer.subscribe(subscriber);
-      $document
-        .on('touchstart', done)
-        .on('mousedown', done);
+      $document.on('touchstart mousedown', done);
       timer.start();
     }
 
@@ -87,9 +77,7 @@
 
     function done(event) {
       var endTime = Date.now();
-      $document
-        .off('touchstart', done)
-        .off('mousedown', done);
+      $document.off('touchstart mousedown', done);
       timer.stop();
       timer.unsubscribe(subscriber);
       $counterDisplay.text(formatTime(endTime - startTime));
