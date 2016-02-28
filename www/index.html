@@ -5,17 +5,12 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <!-- <link rel="stylesheet" type="text/css" href="css/index.css"> -->
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <title>Cube Timer</title>
   </head>
   <body>
     <div class="app">
       <h1>Cube Timer</h1>
-      <!-- <div id="deviceready" class="blink"> -->
-        <!--     <p class="event listening">Connecting to Device</p> -->
-        <!--     <p class="event received">Device is Ready</p> -->
-        <!-- </div> -->
       <div id="choosePuzzle">
         <h2>Choose a Puzzle</h2>
         <select id="puzzleDropdown">
@@ -30,18 +25,16 @@
       </div>
       <div id="timer">
         <h2 id="puzzleName"></h2>
-        <div id="counter">
-          <div id="ready">Ready</div>
+        <div id="ready" class="content">Ready</div>
+        <div id="counter" class="content">
           <div id="counterDisplay">&nbsp;</div>
         </div>
         <button id="btnTime">Solve</button>
-        <button id="btnBack">Back</button>
       </div>
     </div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
     <script type="text/javascript" src="js/timer.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
-    <!-- <script type="text/javascript" src="js/index.js"></script> -->
   </body>
 </html>
