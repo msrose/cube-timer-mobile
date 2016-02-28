@@ -1,4 +1,4 @@
-(function() {
+window.Timer = (function() {
   'use strict';
 
   function Timer(interval) {
@@ -56,5 +56,5 @@
     }
   };
 
-  window.Timer = Timer;
+  return Timer;
 })();

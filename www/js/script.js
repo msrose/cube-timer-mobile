@@ -14,6 +14,7 @@
     var $document = $(document);
     var startTimeout = null;
     var timer = new Timer(10);
+    var startTime;
 
     $btnStart.on('click', function(event) {
       $puzzleName.text($puzzleDropdown.val());
@@ -56,6 +57,7 @@
     }
 
     function start(event) {
+      startTime = Date.now();
       $btnTime
         .off('touchend', start)
         .off('mouseup', start);
@@ -75,11 +77,13 @@
     }
 
     function done(event) {
+      var endTime = Date.now();
       $document
         .off('touchstart', done)
         .off('mousedown', done);
       timer.stop();
       timer.unsubscribe(subscriber);
+      $counterDisplay.text(formatTime(endTime - startTime));
       $btnTime.show();
     }
 
