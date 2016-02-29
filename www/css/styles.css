@@ -30,12 +30,32 @@ button {
 
 .content {
   text-align: center;
-  padding: 60px;
+  padding: 60px 40px;
   margin-bottom: 20px;
   font-size: 48px;
   font-family: monospace;
 }
 
 #solves {
-  font-size: 16px;
+  font-size: 18px;
+}
+
+.solve {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid lightgray;
+}
+
+.solve:hover {
+  background-color: lightgray;
+}
+
+.solve .duration {
+  font-size: 26px;
+}
+
+.solve .recorded-at {
+  float: right;
+  opacity: 0.75;
+  padding-top: 6px;
 }

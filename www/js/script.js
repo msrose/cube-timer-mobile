@@ -17,10 +17,10 @@
       var $document = $(document);
       var $body = $('body');
       var startTimeout = null;
-      var timer = new Timer(10);
+      var timer = new Timer(73);
       var startTime;
 
-      $btnStart.on('click', function(event) {
+      $btnStart.on('touch click', function(event) {
         $puzzleName.text($puzzleDropdown.val());
         $choosePuzzle.hide();
         $timer.show();
@@ -39,14 +39,30 @@
           if(err) return console.error(err);
           for(var i = 0; i < result.rows.length; i++) {
             var row = result.rows[i];
-            addSolveRow(row.puzzle, row.duration, row.recorded_at);
+            addSolveRow(row.id, row.duration, row.recorded_at);
           }
         });
       }
 
-      function addSolveRow(puzzle, duration, recordedAt) {
-        var text = puzzle + ': ' + formatTime(duration) + ' (' + new Date(recordedAt) + ')';
-        $solves.append($('<div>').text(text));
+      function addSolveRow(id, duration, recordedAt) {
+        var $row = $('<div>')
+          .addClass('solve');
+        var $duration = $('<span>')
+          .text(SolveUtils.formatTime(duration))
+          .addClass('duration');
+        var $recordedAt = $('<span>')
+          .text(SolveUtils.formatDate(new Date(recordedAt)))
+          .addClass('recorded-at');
+        $row.append($duration).append($recordedAt);
+        $solves.prepend($row);
+        $row.on('touch click', function(event) {
+          if(confirm('Delete solve?')) {
+            SolveStorage.deleteSolve(id, function(err, result) {
+              if(err) return console.err(err);
+              $row.fadeOut();
+            });
+          }
+        });
       }
 
       function back(event) {
@@ -97,7 +113,7 @@
       }
 
       function subscriber(ticks) {
-        $counterDisplay.text(formatTime(ticks));
+        $counterDisplay.text(SolveUtils.formatTime(ticks));
       }
 
       function done(event) {
@@ -107,28 +123,11 @@
         timer.stop();
         timer.unsubscribe(subscriber);
         var duration = endTime - startTime;
-        $counterDisplay.text(formatTime(duration));
-        SolveStorage.addSolve($puzzleDropdown.val(), duration, endTime, function(err, rows) {
+        $counterDisplay.text(SolveUtils.formatTime(duration));
+        SolveStorage.addSolve($puzzleDropdown.val(), duration, endTime, function(err, result) {
           if(err) console.error(err);
-          addSolveRow($puzzleDropdown.val(), duration, endTime);
+          addSolveRow(result.insertId, duration, endTime);
         });
-      }
-
-      function pad(num, size) {
-        var str = num.toString();
-        while(str.length < size) {
-          str = '0' + str;
-        }
-        return str;
-      }
-
-      function formatTime(ms) {
-        var mins = Math.floor(ms / 60000);
-        ms %= 60000;
-        var secs = Math.floor(ms / 1000);
-        ms %= 1000;
-        var subsecs = ms;
-        return mins + ':' + pad(secs, 2) + '.' + pad(subsecs, 3);
       }
     });
   });
