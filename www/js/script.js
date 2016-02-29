@@ -42,26 +42,25 @@
             solves.push(row);
           }
           if(solves.length > 0 && confirm('Sync ' + puzzle + ' now?')) {
-            $.get('js/config.json', function(config) {
-              $.ajax({
-                url: config.syncUrl + '/solves',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ solves: solves }),
-                headers: {
-                  Authorization: config.authorizationToken
-                },
-                success: function(data) {
-                  alert('Successfully synced: ' + data.message);
-                  SolveStorage.deleteSolves(puzzle, function(err, result) {
-                    if(err) return alert('Could not delete synced solves: ' + err.message);
-                    $solves.empty();
-                  });
-                },
-                error: function(err) {
-                  alert('Could not sync: ' + err.responseText);
-                }
-              });
+            $.ajax({
+              url: Config.syncUrl + '/solves',
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({ solves: solves }),
+              headers: {
+                Authorization: Config.authorizationToken
+              },
+              success: function(data) {
+                alert('Successfully synced: ' + data.message);
+                SolveStorage.deleteSolves(puzzle, function(err, result) {
+                  if(err) return alert('Could not delete synced solves: ' + err.message);
+                  $solves.empty();
+                });
+              },
+              error: function(err) {
+                var error = err.message || err.responseText || JSON.stringify(err);
+                alert('Could not sync: ' + error);
+              }
             });
           }
         });

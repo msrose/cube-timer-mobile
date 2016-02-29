@@ -2,4 +2,4 @@ platforms/
 plugins/
 *.swp
 *.swo
-www/js/config.json
+www/js/config.js
