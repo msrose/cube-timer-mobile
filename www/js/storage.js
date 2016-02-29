@@ -25,6 +25,11 @@ window.SolveStorage = (function() {
     executeSql(query, [id], callback);
   };
 
+  db.deleteSolves = function(puzzle, callback) {
+    var query = 'DELETE FROM solves WHERE puzzle = ?';
+    executeSql(query, [puzzle], callback);
+  };
+
   function executeSql(query, params, callback) {
     if(!db.conn) return callback(new Error('No connection made'));
     db.conn.transaction(function(t) {

@@ -3,7 +3,7 @@
 
   $(document).on('deviceready', function(event) {
     SolveStorage.open(function(err) {
-      if(err) console.error(err);
+      if(err) return alert('Could not create database: ' + err);
 
       var $choosePuzzle = $('#choosePuzzle');
       var $puzzleDropdown = $('#puzzleDropdown');
@@ -13,6 +13,7 @@
       var $counter = $('#counter');
       var $counterDisplay = $('#counterDisplay');
       var $btnStart = $('#btnStart');
+      var $btnSync = $('#btnSync');
       var $solves = $('#solves');
       var $document = $(document);
       var $body = $('body');
@@ -30,17 +31,55 @@
           .on('touchend mouseup', cancelReady);
       });
 
+      $btnSync.on('touch click', function(event) {
+        var puzzle = $puzzleDropdown.val();
+        SolveStorage.getSolves(puzzle, function(err, result) {
+          if(err) return alert('Could not sync: ' + err);
+          var solves = [];
+          for(var i = 0; i < result.rows.length; i++) {
+            var row = result.rows[i];
+            delete row.id;
+            solves.push(row);
+          }
+          if(solves.length > 0 && confirm('Sync ' + puzzle + ' now?')) {
+            $.get('js/config.json', function(config) {
+              $.ajax({
+                url: config.syncUrl + '/solves',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ solves: solves }),
+                headers: {
+                  Authorization: config.authorizationToken
+                },
+                success: function(data) {
+                  alert('Successfully synced: ' + data.message);
+                  SolveStorage.deleteSolves(puzzle, function(err, result) {
+                    if(err) return alert('Could not delete synced solves: ' + err.message);
+                    $solves.empty();
+                  });
+                },
+                error: function(err) {
+                  alert('Could not sync: ' + err.responseText);
+                }
+              });
+            });
+          }
+        });
+      });
+
       $puzzleDropdown.on('change', viewRecords);
       viewRecords();
 
       function viewRecords(event) {
         $solves.empty();
+        $btnSync.prop('disabled', true);
         SolveStorage.getSolves($puzzleDropdown.val(), function(err, result) {
-          if(err) return console.error(err);
+          if(err) return alert('Could not get solves: ' + err);
           for(var i = 0; i < result.rows.length; i++) {
             var row = result.rows[i];
             addSolveRow(row.id, row.duration, row.recorded_at);
           }
+          $btnSync.prop('disabled', false);
         });
       }
 
@@ -58,7 +97,7 @@
         $row.on('touch click', function(event) {
           if(confirm('Delete solve?')) {
             SolveStorage.deleteSolve(id, function(err, result) {
-              if(err) return console.err(err);
+              if(err) return alert('Could not delete solve: ' + err);
               $row.fadeOut();
             });
           }
@@ -125,7 +164,7 @@
         var duration = endTime - startTime;
         $counterDisplay.text(SolveUtils.formatTime(duration));
         SolveStorage.addSolve($puzzleDropdown.val(), duration, endTime, function(err, result) {
-          if(err) console.error(err);
+          if(err) return alert('Could not save solve: ' + err);
           addSolveRow(result.insertId, duration, endTime);
         });
       }
